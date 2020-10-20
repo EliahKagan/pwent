@@ -11,12 +11,13 @@ for my $username_or_uid (@ARGV ? @ARGV : `getent passwd` =~ /^[^:]+/msxg) {
         next;
     }
 
-    if (`getent passwd $username_or_uid` =~ /^(?<user>[^:]+)
-                                             :(?<pass>[^:]*)
+    if (`getent passwd $username_or_uid` =~ /^(?<user>[^:\n]+)
+                                             :(?<pass>[^:\n]*)
                                              :(?<uid>\d+)
                                              :(?<gid>\d+)
-                                             :(?<gecos>[^:]*)
-                                             :(?<home>[^:]+)/msx) {
+                                             :(?<gecos>[^:\n]*)
+                                             :(?<home>[^:\n]+)
+                                             :(?<shell>[^:\n]+)$/msx) {
         print Dumper(\%+);
     } else {
         warn qq{$0: username or uid "$username_or_uid" not found\n};
