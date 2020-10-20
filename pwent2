@@ -1,0 +1,53 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use Data::Dumper qw(Dumper);
+use English qw(PROGRAM_NAME);
+
+sub display_passwd_record_hash {
+    my ($name,
+        $passwd,
+        $uid,
+        $gid,
+        $quota,
+        $comment,
+        $gcos,
+        $dir,
+        $shell,
+        $expire) = @_;
+
+    print Dumper({
+        user => $name,
+        passwd => $passwd,
+        uid => $uid,
+        gid => $gid,
+        gecos => $gcos,
+        home => $dir,
+        shell => $shell,
+    });
+}
+
+if (@ARGV) {
+    for my $username_or_uid (@ARGV) {
+        # Make sure the argument won't inadverently cause a shell to run commands.
+        unless ($username_or_uid =~ /\A\w[\w-]*\z/msx) {
+            warn qq{$PROGRAM_NAME: bad username or uid "$username_or_uid"\n};
+            next;
+        }
+
+        my @pw = ($username_or_uid =~ /\A\d+\z/msx
+                    ? getpwuid($username_or_uid)
+                    : getpwnam($username_or_uid));
+
+        if (@pw) {
+            display_passwd_record_hash(@pw);
+        } else {
+            warn qq{$PROGRAM_NAME: username or uid "$username_or_uid" not found\n};
+        }
+    }
+} else {
+    while (my @pw = getpwent) {
+        display_passwd_record_hash(@pw);
+    }
+}
