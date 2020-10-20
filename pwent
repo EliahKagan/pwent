@@ -6,7 +6,7 @@ use Data::Dumper qw(Dumper);
 
 for my $username_or_uid (@ARGV ? @ARGV : `getent passwd` =~ /^[^:]+/msxg) {
     # Make sure the argument won't inadverently cause a shell to run commands.
-    unless ($username_or_uid =~ /\w[\w-]/msx) {
+    unless ($username_or_uid =~ /\A\w[\w-]*\z/msx) {
         warn qq{$0: bad username or uid "$username_or_uid"\n};
         next;
     }
