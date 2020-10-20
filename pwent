@@ -1,0 +1,26 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use Data::Dumper;
+
+warn "Usage: $0 username_or_uid...\n" unless @ARGV;
+
+for my $username_or_uid (@ARGV) {
+    # Make sure the argument won't inadverently cause a shell to run commands.
+    if ($username_or_uid =~ /\W/msx) {
+        warn qq{$0: bad username or uid "$username_or_uid"\n};
+        next;
+    }
+
+    if (`getent passwd $username_or_uid` =~ /^(?<user>[^:]+)
+                                             :(?<pass>[^:]+)
+                                             :(?<uid>\d+)
+                                             :(?<gid>\d+)
+                                             :(?<gecos>[^:]+)
+                                             :(?<home>[^:]+)/msx) {
+        print Dumper(\%+);
+    } else {
+        warn qq{$0: username or uid "$username_or_uid" not found\n};
+    }
+}
