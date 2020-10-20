@@ -2,22 +2,20 @@
 
 use strict;
 use warnings;
-use Data::Dumper;
+use Data::Dumper qw(Dumper);
 
-warn "Usage: $0 username_or_uid...\n" unless @ARGV;
-
-for my $username_or_uid (@ARGV) {
+for my $username_or_uid (@ARGV ? @ARGV : `getent passwd` =~ /^[^:]+/msxg) {
     # Make sure the argument won't inadverently cause a shell to run commands.
-    if ($username_or_uid =~ /\W/msx) {
+    unless ($username_or_uid =~ /\w[\w-]/msx) {
         warn qq{$0: bad username or uid "$username_or_uid"\n};
         next;
     }
 
     if (`getent passwd $username_or_uid` =~ /^(?<user>[^:]+)
-                                             :(?<pass>[^:]+)
+                                             :(?<pass>[^:]*)
                                              :(?<uid>\d+)
                                              :(?<gid>\d+)
-                                             :(?<gecos>[^:]+)
+                                             :(?<gecos>[^:]*)
                                              :(?<home>[^:]+)/msx) {
         print Dumper(\%+);
     } else {
