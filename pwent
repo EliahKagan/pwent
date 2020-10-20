@@ -18,7 +18,7 @@ for my $username_or_uid (@ARGV ? @ARGV : `getent passwd` =~ /^[^:]+/msxg) {
                                              :(?<gecos>[^:\n]*)
                                              :(?<home>[^:\n]+)
                                              :(?<shell>[^:\n]+)$/msx) {
-        print Dumper(\%+);
+        print Dumper(\%{^CAPTURE});
     } else {
         warn qq{$0: username or uid "$username_or_uid" not found\n};
     }
