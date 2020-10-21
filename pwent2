@@ -33,12 +33,6 @@ sub display_passwd_record_hash {
 sub query_one {
     my $username_or_uid = shift;
 
-    # Make sure the argument won't inadverently cause a shell to run commands.
-    unless ($username_or_uid =~ /\A\w[\w-]*\z/msx) {
-        warn qq{$PROGRAM_NAME: bad username or uid "$username_or_uid"\n};
-        return;
-    }
-
     my @pw = ($username_or_uid =~ /\A\d+\z/msx ? getpwuid $username_or_uid
                                                : getpwnam $username_or_uid);
 
