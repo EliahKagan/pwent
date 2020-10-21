@@ -26,25 +26,34 @@ sub display_passwd_record_hash {
         home => $dir,
         shell => $shell,
     });
+
+    return;
+}
+
+sub query_one {
+    my $username_or_uid = shift;
+
+    # Make sure the argument won't inadverently cause a shell to run commands.
+    unless ($username_or_uid =~ /\A\w[\w-]*\z/msx) {
+        warn qq{$PROGRAM_NAME: bad username or uid "$username_or_uid"\n};
+        return;
+    }
+
+    my @pw = ($username_or_uid =~ /\A\d+\z/msx ? getpwuid $username_or_uid
+                                               : getpwnam $username_or_uid);
+
+    if (@pw) {
+        display_passwd_record_hash(@pw);
+    } else {
+        warn qq{$PROGRAM_NAME: username or uid "$username_or_uid" not found\n};
+    }
+
+    return;
 }
 
 if (@ARGV) {
     for my $username_or_uid (@ARGV) {
-        # Make sure the argument won't inadverently cause a shell to run commands.
-        unless ($username_or_uid =~ /\A\w[\w-]*\z/msx) {
-            warn qq{$PROGRAM_NAME: bad username or uid "$username_or_uid"\n};
-            next;
-        }
-
-        my @pw = ($username_or_uid =~ /\A\d+\z/msx
-                    ? getpwuid($username_or_uid)
-                    : getpwnam($username_or_uid));
-
-        if (@pw) {
-            display_passwd_record_hash(@pw);
-        } else {
-            warn qq{$PROGRAM_NAME: username or uid "$username_or_uid" not found\n};
-        }
+        query_one($username_or_uid);
     }
 } else {
     while (my @pw = getpwent) {
