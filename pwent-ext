@@ -1,4 +1,5 @@
 #!/usr/bin/env perl
+# pwent-ext - Run "getent passwd" and parse the results with regexps.
 
 # Copyright (c) 2020 Eliah Kagan
 #
