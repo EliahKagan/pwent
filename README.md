@@ -23,7 +23,8 @@ functions work.
 
 This was originally made as a demonstration of Perl regular expressions,
 consisting solely of the script now called `pwent-ext`. Then it grew a bit from
-there, including the second script that doesn't need regular expressions.
+there, including the second script that doesn't (hardly) need regular
+expressions.
 
 It was first presented in [this old
 gist](https://gist.github.com/EliahKagan/bcab9d925a87ead59ce651e288a052c5),
