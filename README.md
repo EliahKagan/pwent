@@ -28,4 +28,4 @@ expressions.
 
 It was first presented in [this old
 gist](https://gist.github.com/EliahKagan/bcab9d925a87ead59ce651e288a052c5),
-which this repository supersedes..
+which this repository supersedes.
